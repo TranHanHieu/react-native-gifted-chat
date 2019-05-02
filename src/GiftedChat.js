@@ -11,7 +11,7 @@ import React from 'react';
 import { Animated, Platform, StyleSheet, View } from 'react-native';
 
 import ActionSheet from '@expo/react-native-action-sheet';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import uuid from 'uuid';
 
 import * as utils from './utils';
@@ -38,6 +38,7 @@ import {
   TIME_FORMAT,
   DATE_FORMAT,
 } from './Constant';
+import DeviceInfo from 'react-native-device-info';
 
 class GiftedChat extends React.Component {
 
@@ -330,7 +331,11 @@ class GiftedChat extends React.Component {
       return {
         ...message,
         user: this.props.user,
-        createdAt: new Date(),
+        createdAt: moment()
+        // .utc(new  'Z', 'YYYY-MM-DD HH:mm.SZ')
+        .tz(DeviceInfo.getTimezone())
+        .utc()
+        .format('YYYY-MM-DD HH:mm'),
         _id: this.props.messageIdGenerator(),
       };
     });
@@ -525,7 +530,6 @@ GiftedChat.defaultProps = {
   renderAvatar: undefined,
   showUserAvatar: false,
   onPressAvatar: null,
-  renderUsernameOnMessage: false,
   renderAvatarOnTop: false,
   renderBubble: null,
   renderSystemMessage: null,
@@ -534,7 +538,6 @@ GiftedChat.defaultProps = {
   renderMessageText: null,
   renderMessageImage: null,
   imageProps: {},
-  videoProps: {},
   lightboxProps: {},
   textInputProps: {},
   listViewProps: {},
@@ -559,7 +562,6 @@ GiftedChat.defaultProps = {
   maxInputLength: null,
   forceGetKeyboardHeight: false,
   inverted: true,
-  extraData: null,
 };
 
 GiftedChat.propTypes = {
@@ -581,7 +583,6 @@ GiftedChat.propTypes = {
   renderAvatar: PropTypes.func,
   showUserAvatar: PropTypes.bool,
   onPressAvatar: PropTypes.func,
-  renderUsernameOnMessage: PropTypes.bool,
   renderAvatarOnTop: PropTypes.bool,
   renderBubble: PropTypes.func,
   renderSystemMessage: PropTypes.func,
@@ -590,7 +591,6 @@ GiftedChat.propTypes = {
   renderMessageText: PropTypes.func,
   renderMessageImage: PropTypes.func,
   imageProps: PropTypes.object,
-  videoProps: PropTypes.object,
   lightboxProps: PropTypes.object,
   renderCustomView: PropTypes.func,
   renderDay: PropTypes.func,
@@ -612,7 +612,6 @@ GiftedChat.propTypes = {
   forceGetKeyboardHeight: PropTypes.bool,
   inverted: PropTypes.bool,
   textInputProps: PropTypes.object,
-  extraData: PropTypes.object,
 };
 
 export {

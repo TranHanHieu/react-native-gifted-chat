@@ -7,22 +7,20 @@ import moment from 'moment';
 
 import Color from './Color';
 
-import { isSameDay } from './utils';
+import { isSameDay, isSameUser, warnDeprecated } from './utils';
 import { DATE_FORMAT } from './Constant';
+import { formatDate } from '../../../src/common/utils/utils-formatting';
 
 export default function Day(
-  { dateFormat, currentMessage, previousMessage, nextMessage, containerStyle, wrapperStyle, textStyle, inverted },
+  { dateFormat, currentMessage, previousMessage, containerStyle, wrapperStyle, textStyle },
   context,
 ) {
-  if (!isSameDay(currentMessage, inverted ? previousMessage : nextMessage)) {
+  if (!isSameDay(currentMessage, previousMessage)) {
     return (
       <View style={[styles.container, containerStyle]}>
         <View style={wrapperStyle}>
           <Text style={[styles.text, textStyle]}>
-            {moment(currentMessage.createdAt)
-              .locale(context.getLocale())
-              .format(dateFormat)
-              .toUpperCase()}
+            {formatDate(currentMessage.createdAt, 'DD MMM YYYY HH:mm')}
           </Text>
         </View>
       </View>
@@ -56,20 +54,23 @@ Day.defaultProps = {
     createdAt: null,
   },
   previousMessage: {},
-  nextMessage: {},
   containerStyle: {},
   wrapperStyle: {},
   textStyle: {},
+  // TODO: remove in next major release
+  isSameDay: warnDeprecated(isSameDay),
+  isSameUser: warnDeprecated(isSameUser),
   dateFormat: DATE_FORMAT,
 };
 
 Day.propTypes = {
   currentMessage: PropTypes.object,
   previousMessage: PropTypes.object,
-  nextMessage: PropTypes.object,
-  inverted: PropTypes.bool,
   containerStyle: ViewPropTypes.style,
   wrapperStyle: ViewPropTypes.style,
   textStyle: Text.propTypes.style,
+  // TODO: remove in next major release
+  isSameDay: PropTypes.func,
+  isSameUser: PropTypes.func,
   dateFormat: PropTypes.string,
 };

@@ -8,17 +8,13 @@ import moment from 'moment';
 
 import Color from './Color';
 import { TIME_FORMAT } from './Constant';
+import { formatDate } from '../../../src/common/utils/utils-formatting';
 
-export default function Time(
-  { position, containerStyle, currentMessage, timeFormat, textStyle, timeTextStyle },
-  context,
-) {
+export default function Time({ position, containerStyle, currentMessage, timeFormat }, context) {
   return (
     <View style={[styles[position].container, containerStyle[position]]}>
-      <Text style={[styles[position].text, textStyle[position], timeTextStyle[position]]}>
-        {moment(currentMessage.createdAt)
-          .locale(context.getLocale())
-          .format(timeFormat)}
+      <Text style={[styles[position].text, textStyle[position]]}>
+        {formatDate(currentMessage.createdAt, 'HH:mm')}
       </Text>
     </View>
   );
@@ -69,7 +65,6 @@ Time.defaultProps = {
   containerStyle: {},
   textStyle: {},
   timeFormat: TIME_FORMAT,
-  timeTextStyle: {},
 };
 
 Time.propTypes = {
@@ -84,8 +79,4 @@ Time.propTypes = {
     right: Text.propTypes.style,
   }),
   timeFormat: PropTypes.string,
-  timeTextStyle: PropTypes.shape({
-    left: Text.propTypes.style,
-    right: Text.propTypes.style,
-  }),
 };
